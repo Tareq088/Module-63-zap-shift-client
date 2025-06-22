@@ -4,6 +4,7 @@ import Service from '../Services/Service';
 import ClientLogoMarque from '../ClientLogoMarque/ClientLogoMarque';
 import HorizontalCard from '../HorizontalCard/HorizontalCard';
 import BeMarchant from '../BeMarchant/BeMarchant';
+import ReviewCarousel from '../ReviewCarousel/ReviewCarousel';
 
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
             <ClientLogoMarque></ClientLogoMarque>
             <HorizontalCard></HorizontalCard>
             <BeMarchant></BeMarchant>
+            <ReviewCarousel></ReviewCarousel>
         </div>
     );
 };
