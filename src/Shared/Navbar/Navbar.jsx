@@ -1,13 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import ProFastLogo from '../ProFastLogo/ProFastLogo';
+import useAuth from '../../Hooks/useAuth';
+import Swal from 'sweetalert2';
+import { FaUserCircle } from 'react-icons/fa';
+import { Tooltip } from 'react-tooltip';
 
 const Navbar = () => {
+    const {user, logOut} = useAuth();
+    const navigate = useNavigate();
     const navItems = <>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/about-us">About Us</Link></li>
-    
     </>
+        const handleLogOut = () =>{
+        logOut()
+        .then(()=>{
+            Swal.fire({icon:"success", title:"Logged Out"});
+            navigate("/login");
+        })
+        .catch(error =>{
+            Swal.fire({icon:"error", title:`${error.message}`});
+        })
+    }
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm">
@@ -31,8 +46,31 @@ const Navbar = () => {
 
                     </ul>
                 </div>
-                <div className="navbar-end">
-                    <a className="btn">Button</a>
+                <div className="navbar-end h-10">
+                    <div className="flex items-center gap-1">
+                        {
+                            user?
+                            <div>
+                                <a data-tooltip-id="my-tooltip" data-tooltip-content={`user: ${user?.email}(${user?.displayName})`} className='w-8 p-0.5 rounded-full'>
+                                    <img className='rounded-full w-12' src={user?.photoURL}></img>
+                                </a>
+                                <Tooltip id="my-tooltip" />
+                            </div>
+                            :
+                            <div className='cursor-pointer' onClick={()=>navigate('/auth/login')}>
+                                <FaUserCircle  size={35}></FaUserCircle>
+                            </div>
+                        } 
+                   
+                        
+                            {
+                                user?
+                                <button onClick={handleLogOut} className="btn btn-outline mr-1 text-xs md:text-base p-1 sm:p-2 text-blue-600 hover:text-red-600">Log Out</button>
+                                :
+                                <Link to='/login' className="btn btn-outline mr-1 text-xs md:text-base p-1 sm:p-2 text-blue-600 hover:text-red-600">Log In</Link>
+                            }
+                  
+                    </div>
                 </div>
                 </div>
             </div>
