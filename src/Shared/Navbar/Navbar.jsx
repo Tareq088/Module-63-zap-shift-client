@@ -11,6 +11,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const navItems = <>
         <li><Link to="/">Home</Link></li>
+        <li><Link to="/coverage">Coverage</Link></li>
         <li><Link to="/about-us">About Us</Link></li>
     </>
         const handleLogOut = () =>{

@@ -10,7 +10,6 @@ const Login = () => {
     }
   return (
     <div className="w-[70%]">
-      
       <form onSubmit={handleSubmit(onSubmit)}>
         <fieldset className="fieldset">
           <label className="label">Email</label>
