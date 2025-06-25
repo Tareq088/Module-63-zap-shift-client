@@ -65,7 +65,7 @@ const Coverage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="btn btn-primary ml-2">Go</button>
+        <button className="btn btn-primary text-black ml-2">Go</button>
       </form>
 
       <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-lg">

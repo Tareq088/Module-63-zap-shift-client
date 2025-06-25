@@ -7,6 +7,7 @@ import { router } from './Router/Router.jsx';
 import AOS from 'aos';
 import 'aos/dist/aos.css'; // You can also use <link> for styles
 import AuthProvider from './Contexts/AuthContext/AuthProvider.jsx';
+import { ToastContainer } from 'react-toastify';
 AOS.init();
 
 createRoot(document.getElementById('root')).render(
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
     <div className='font-urbanist max-w-7xl mx-auto'>
       <AuthProvider>
         <RouterProvider router={router} />
+        <ToastContainer position="top-center" />
       </AuthProvider>
     </div>
   </StrictMode>,

@@ -1,12 +1,25 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { register } from "swiper/element";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import useAuth from "../../../Hooks/useAuth";
 const Login = () => {
+  const{signIn,user, setUser} =useAuth();
+  const location = useLocation();
+  const navigate = useNavigate()
+
     const {register,handleSubmit, formState:{errors}} = useForm();
     const onSubmit = (data) =>{
-        console.log(data)
+        console.log(data);
+        signIn(data.email, data.password)
+        .then(result=>{
+          console.log(result.user);
+          navigate(location.state || "/");
+        })
+        .catch(error =>{
+          console.log(error.message)
+        })
     }
   return (
     <div className="w-[70%]">

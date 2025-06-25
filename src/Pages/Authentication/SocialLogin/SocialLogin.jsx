@@ -1,12 +1,17 @@
 import React from 'react';
 import useAuth from '../../../Hooks/useAuth';
+import { useLocation, useNavigate } from 'react-router';
 
 const SocialLogin = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {user} = useAuth()
     const {signInWithGoogle} = useAuth();
     const handleGoogleSignIn = () =>{
         signInWithGoogle()
         .then(result=>{
             console.log(result.user);
+            navigate(location.state || "/")
         })
         .catch(error=>{
             console.error(error)
@@ -27,3 +32,12 @@ const SocialLogin = () => {
 };
 
 export default SocialLogin;
+
+//  const [districtData, setDistrictData] = useState([]); // ✅ Add state for data
+//     // ✅ Fetch district data from public folder on mount
+//   useEffect(() => {
+//     fetch('/warehouses.json')
+//       .then(res => res.json())
+//       .then(data => setDistrictData(data))
+//       .catch(err => console.error('Failed to load district data:', err));
+//   }, []);

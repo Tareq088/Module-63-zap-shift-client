@@ -28,7 +28,7 @@ const AuthProvider = ({children}) => {
         const unSubscribe = onAuthStateChanged(auth, currentUser =>{
             setUser(currentUser);
             console.log("user in the auth", currentUser)
-            setLoading(false)
+            setLoading(false);
         });
         return ()=>{
             unSubscribe();
@@ -39,7 +39,7 @@ const AuthProvider = ({children}) => {
 
 
     const authInfo ={
-        user,setUser, setLoading,createUser, signIn, signInWithGoogle, logOut
+        user,setUser,loading, setLoading,createUser, signIn, signInWithGoogle, logOut
     }
     return (
         <AuthContext value={authInfo}>
