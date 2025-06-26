@@ -12,6 +12,11 @@ const Navbar = () => {
     const navItems = <>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/sendParcel">Send A Parcel</Link></li>
+        {
+            user && <>
+            <li><Link to="/dashboard">DashBoard</Link></li>
+            </>
+        }
         <li><Link to="/coverage">Coverage</Link></li>
         
     </>

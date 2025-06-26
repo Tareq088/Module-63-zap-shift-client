@@ -3,6 +3,8 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../Hooks/useAuth";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import axios from "axios";
    // generate tracking Id
   const generateTrackingId = () => {
   const random = Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g., "4F7Z1P"
@@ -16,8 +18,10 @@ import useAuth from "../../Hooks/useAuth";
 const SendParcelForm = () => {
   const {user} = useAuth();
   const { control, handleSubmit, watch, reset, register } = useForm();
+  const axiosSecure = useAxiosSecure();
   const [cost, setCost] = useState(null);
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [breakdownCost, setBreakdownCost] = useState(" ")
 
   const [districtData, setDistrictData] = useState([]); // ✅ Add state for data
   // ✅ Fetch district data from public folder on mount
@@ -49,27 +53,40 @@ const SendParcelForm = () => {
     if (!parcelType || !senderDistrict || !receiverDistrict) return;
     const isWithinCity = senderDistrict === receiverDistrict;
     let calculatedCost = 0;
+    let breakdown = '';
 
     if (parcelType === "document") {
       calculatedCost = isWithinCity ? 60 : 80;
-    } else if (parcelType === "non-document") {
+      breakdown = `Document (${isWithinCity ? 'Within City' : 'Outside City'}): ৳${calculatedCost}`;
+    } 
+    else if (parcelType === "non-document") {
       const w = parseFloat(weight) || 0;
       if (w <= 3) {
         calculatedCost = isWithinCity ? 110 : 150;
       } else {
+        const base = isWithinCity ? 110 : 150;
         const extraWeight = w - 3;
         const extraCost = extraWeight * 40;
         calculatedCost = isWithinCity ? 110 + extraCost : 150 + extraCost + 40;
+        breakdown = `Non-Document > 3kg (${weight}kg):\nBase: ৳${base} + Extra Weight (${extraWeight}kg × ৳40) = ৳${extraCost}${!isWithinCity ? ' + ৳40 (Outside City Extra)' : ''}\nTotal: ৳${calculatedCost}`;
       }
     }
-
     setCost(calculatedCost);
     setHasCalculated(true);
+    setBreakdownCost(breakdown)
   }, [parcelType, weight, senderDistrict, receiverDistrict]);
                
-
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async(data) => {
+    // console.log(data);
+      // Show SweetAlert with breakdown
+  // const result = await Swal.fire({
+  //   title: 'Confirm Parcel Submission',
+  //   html: `<pre style="text-align:left">${breakdown}</pre>`,
+  //   icon: 'info',
+  //   showCancelButton: true,
+  //   confirmButtonText: 'Confirm',
+  //   cancelButtonText: 'Cancel'
+  // });
     const parcelData = {...data, cost, 
       creation_date: new Date().toISOString(),
       created_by: user?.email,
@@ -77,11 +94,20 @@ const SendParcelForm = () => {
       delivery_status : "not_collected",
       trackingId: generateTrackingId(),
     }
-    console.log(parcelData)
-    toast.success("Parcel info submitted!");
-    reset();
-    setCost(null);
-    setHasCalculated(false);
+    // console.log(parcelData);
+    axiosSecure.post('/parcels',parcelData)
+    .then(data => {
+      console.log(data.data);
+      if(data.data.insertedId){
+          toast.success("Parcel info submitted!");
+          reset();
+          setCost(null);
+          setHasCalculated(false);
+      }
+    })
+    .catch(error=>{
+      console.log(error)
+    })
   };
 
   return (
@@ -329,6 +355,8 @@ const SendParcelForm = () => {
         {/* Cost */}
         {hasCalculated && (
           <p className="text-xl font-bold text-green-600">
+            Cost with Details: <span className="text-black">{breakdownCost}</span>
+            <br />
             Total Cost: ৳{cost}
           </p>
         )}
