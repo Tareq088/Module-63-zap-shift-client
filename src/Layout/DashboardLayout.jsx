@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router';
 
 const DashboardLayout = () => {
     return (
@@ -28,7 +29,8 @@ const DashboardLayout = () => {
                    
                 </div>
                     {/* Page content here */}
-                    Content
+                    <Outlet></Outlet>
+                    content
             </div>
             <div className="drawer-side">
                 <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>

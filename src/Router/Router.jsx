@@ -48,7 +48,8 @@ export const router = createBrowserRouter([
     element:<PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
     children:[
       {
-        path:"myParcels",
+        index: true,
+        // path:"myParcels",
         element:<MyParcels></MyParcels>
       }
     ]
