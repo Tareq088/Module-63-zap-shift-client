@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
         element:<MyParcels></MyParcels>
       },
       {
-        path:'payment/:id',
+        path:'payment/:parcelId',
         element:<Payment></Payment>
       }
     ]
