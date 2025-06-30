@@ -1,16 +1,29 @@
 import React from 'react';
 import useAuth from '../../../Hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router';
+import useAxios from '../../../Hooks/useAxios';
 
 const SocialLogin = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const {user} = useAuth()
-    const {signInWithGoogle} = useAuth();
+    const {signInWithGoogle} = useAuth()
+    const axiosInstance = useAxios();
+
     const handleGoogleSignIn = () =>{
         signInWithGoogle()
-        .then(result=>{
+        .then(async(result)=>{
             console.log(result.user);
+            const user= result.user;
+                //update user in db
+            const userInfo = {
+            email: user.email,
+            role: "user", //default rol
+            createdAt: new Date().toISOString(),
+            last_log_In: new Date().toISOString(),
+            }
+            const userRes = await axiosInstance.post("/users", userInfo);
+            console.log("user update info",userRes.data)
+
             navigate(location.state || "/")
         })
         .catch(error=>{
@@ -32,12 +45,3 @@ const SocialLogin = () => {
 };
 
 export default SocialLogin;
-
-//  const [districtData, setDistrictData] = useState([]); // ✅ Add state for data
-//     // ✅ Fetch district data from public folder on mount
-//   useEffect(() => {
-//     fetch('/warehouses.json')
-//       .then(res => res.json())
-//       .then(data => setDistrictData(data))
-//       .catch(err => console.error('Failed to load district data:', err));
-//   }, []);

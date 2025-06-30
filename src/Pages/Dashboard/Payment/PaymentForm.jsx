@@ -89,7 +89,7 @@ const PaymentForm = () => {
                             payment_method:result.paymentIntent.payment_method_types,
                             transaction_id:transactionId,
                         }
-                        const paymentRes =await axiosSecure.post("/payments",paymentData);
+                        const paymentRes = await axiosSecure.post("/payments",paymentData);
                         console.log(paymentRes)
                         if(paymentRes.data.insertedId){
                             console.log("payment successfully done...");
