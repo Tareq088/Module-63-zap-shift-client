@@ -12,6 +12,7 @@ import MyParcels from "../Pages/Dashboard/MyParcels/MyParcels";
 import Payment from "../Pages/Dashboard/Payment/Payment";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
 import TrackParcel from './../Pages/Dashboard/TrackParcel/TrackParcel';
+import BeARider from "../Pages/Dashboard/BeARider/BeARider";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path:"/coverage",
         Component:Coverage
+      },
+      {
+        path:"/beARider",
+        element:<PrivateRoute><BeARider></BeARider></PrivateRoute>
       },
       {
         path: "/sendParcel",

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import axios from "axios";
+import useFetchJson from "../../Hooks/useFetchJson";
    // generate tracking Id
   const generateTrackingId = () => {
   const random = Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g., "4F7Z1P"
@@ -21,16 +22,18 @@ const SendParcelForm = () => {
   const axiosSecure = useAxiosSecure();
   const [cost, setCost] = useState(null);
   const [hasCalculated, setHasCalculated] = useState(false);
-  const [breakdownCost, setBreakdownCost] = useState(" ")
+  const [breakdownCost, setBreakdownCost] = useState(" ");
+  const fetchPromise = useFetchJson();
 
   const [districtData, setDistrictData] = useState([]); // ✅ Add state for data
   // ✅ Fetch district data from public folder on mount
   useEffect(() => {
-    fetch("/warehouses.json")
-      .then((res) => res.json())
+    // fetch("/warehouses.json")
+    //   .then((res) => res.json())
+    fetchPromise
       .then((data) => setDistrictData(data))
       .catch((err) => console.error("Failed to load district data:", err));
-  }, []);
+  }, [fetchPromise]);
 
   const [senderRegion, setSenderRegion] = useState("");
   const [senderDistrictState, setSenderDistrictState] = useState("");
