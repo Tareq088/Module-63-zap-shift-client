@@ -8,7 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css'; // You can also use <link> for styles
 import AuthProvider from './Contexts/AuthContext/AuthProvider.jsx';
 import { ToastContainer } from 'react-toastify';
-import {useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 AOS.init();
 // Create a client
 const queryClient = new QueryClient()

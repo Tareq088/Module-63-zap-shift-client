@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
-import { toast } from "react-hot-toast";
+import { toast } from "react-toastify";
 import useAuth from "../../../Hooks/useAuth";
 import useFetchJson from "../../../Hooks/useFetchJson";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const BeARider = () => {
   const { user } = useAuth();
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [serviceCenter, setServiceCenter] = useState( [])
   const [selectedRegion, setSelectedRegion] = useState("");
   const axiosSecure = useAxiosSecure();
@@ -20,8 +19,8 @@ const BeARider = () => {
         fetchPromise
         .then((data) => setServiceCenter(data))
         .catch((err) => console.error("Failed to load district data:", err));
-    }, []);
-    console.log(serviceCenter)
+    }, [user]);
+    // console.log(serviceCenter)
 
   const onSubmit = (data) => {
     const riderData = {
@@ -35,12 +34,12 @@ const BeARider = () => {
     axiosSecure.post("/riders",riderData)
     .then(res=>{
         if(res.data.insertedId){
-            console.log("rider submitted")
+            console.log("rider submitted");
             toast.success("Rider registration submitted!");
         }
     })
     
-    // reset();
+    reset();
   };
 
   // 🔄 Regions and filtered Districts

@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import ProFastLogo from "../Shared/ProFastLogo/ProFastLogo";
-import { FaHome, FaBoxOpen, FaHistory, FaUserEdit } from "react-icons/fa";
+import { FaHome, FaBoxOpen, FaHistory, FaUserEdit,FaUserCheck, FaUserClock } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 
 const DashboardLayout = () => {
@@ -74,6 +74,18 @@ const DashboardLayout = () => {
             <NavLink to="/dashboard/profile">
               <FaUserEdit className="inline mr-2" />
               Update Profile
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/activeRiders">
+              <FaUserCheck className="inline mr-2" />
+              Active Riders
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/pendingRiders">
+              <FaUserClock className="inline mr-2" />
+              Pending Riders
             </NavLink>
           </li>
         </ul>
