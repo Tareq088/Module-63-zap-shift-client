@@ -4,12 +4,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import useAuth from "../../../Hooks/useAuth";
 import useFetchJson from "../../../Hooks/useFetchJson";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const BeARider = () => {
   const { user } = useAuth();
   const { register, handleSubmit, watch, reset } = useForm();
   const [serviceCenter, setServiceCenter] = useState( [])
   const [selectedRegion, setSelectedRegion] = useState("");
+  const axiosSecure = useAxiosSecure();
   const fetchPromise = useFetchJson();
 //   console.log(fetchPromise)
     useEffect(() => {
@@ -18,19 +20,27 @@ const BeARider = () => {
         fetchPromise
         .then((data) => setServiceCenter(data))
         .catch((err) => console.error("Failed to load district data:", err));
-    }, [user, fetchPromise]);
+    }, []);
     console.log(serviceCenter)
 
   const onSubmit = (data) => {
-    const formData = {
+    const riderData = {
       ...data,
       status: "pending", // 🔒 default status
       name: user?.displayName,
       email: user?.email,
+      created_at: new Date().toISOString(),
     };
-    console.log(formData);
-    toast.success("Rider registration submitted!");
-    reset();
+    console.log(riderData);
+    axiosSecure.post("/riders",riderData)
+    .then(res=>{
+        if(res.data.insertedId){
+            console.log("rider submitted")
+            toast.success("Rider registration submitted!");
+        }
+    })
+    
+    // reset();
   };
 
   // 🔄 Regions and filtered Districts
