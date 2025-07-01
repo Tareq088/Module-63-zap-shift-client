@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
 import { useState } from "react";
 import useAxiosSecure from './../../../Hooks/useAxiosSecure';
-import { toast } from "react-toastify";
+
 import Swal from "sweetalert2";
 
 
@@ -18,7 +18,7 @@ const PendingRiders = () => {
     }
   });
 
-    const handleAction = async (id, status) => {
+  const handleAction = async (id, status,email) => {
     const result = await Swal.fire({
         title: `Are you sure?`,
         text: `You are about to ${status} this rider.`,
@@ -32,7 +32,7 @@ const PendingRiders = () => {
     if (result.isConfirmed) {
         try {
         await axiosSecure.patch(`/riders/status/${id}`, {
-            status,
+            status, email
         });
         Swal.fire('Updated!', `Rider has been ${status}.`, 'success');
         refetch();
@@ -41,7 +41,7 @@ const PendingRiders = () => {
         console.error(err);
         }
     }
-    };
+  };
 
   if (isLoading) return <div className="p-10">Loading...</div>;
 
@@ -78,13 +78,13 @@ const PendingRiders = () => {
                   </button>
                   <button
                     className="btn btn-sm btn-success"
-                    onClick={() => handleAction(rider._id, "approved")}
+                    onClick={() => handleAction(rider._id, "approved",rider.email)}
                   >
                     Approve
                   </button>
                   <button
                     className="btn btn-sm btn-error"
-                    onClick={() => handleAction(rider._id, "canceled")}
+                    onClick={() => handleAction(rider._id, "canceled",rider.email)}
                   >
                     Cancel
                   </button>

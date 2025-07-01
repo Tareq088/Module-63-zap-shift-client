@@ -7,6 +7,7 @@ import useAuth from "../../../Hooks/useAuth";
 const Login = () => {
   const{signIn,user, setUser} =useAuth();
   const location = useLocation();
+  console.log(location)
   const navigate = useNavigate()
 
     const {register,handleSubmit, formState:{errors}} = useForm();
@@ -45,7 +46,7 @@ const Login = () => {
         <p><small>
             Yet Have No Account! 
             <span className="btn btn-link btn-success"> 
-              <Link to='/register'>Register Now</Link>
+              <Link state={location.state} to='/register'>Register Now</Link>
             </span>  
         </small></p>
       </form>

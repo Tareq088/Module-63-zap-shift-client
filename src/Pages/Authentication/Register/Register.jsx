@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import axios from "axios";
 import useAxios from "../../../Hooks/useAxios";
@@ -11,6 +11,9 @@ const Register = () => {
   const {register, handleSubmit, formState: { errors }} = useForm();
   const { user, createUser, updateUserProfile } = useAuth();
   const axiosInstance = useAxios();
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location)
 
   const onSubmit = (data) => {
     console.log(data);
@@ -36,6 +39,8 @@ const Register = () => {
         updateUserProfile(userUpdateProfile)
         .then(()=>{
           console.log("name , profile pic updated");
+          navigate(location.state || "/")
+          
         })
         .catch(error =>{
           console.log(error)
