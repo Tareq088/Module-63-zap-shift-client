@@ -16,6 +16,8 @@ import BeARider from "../Pages/Dashboard/BeARider/BeARider";
 import PendingRiders from "../Pages/Dashboard/PendingRiders/PendingRiders";
 import ActiveRiders from "../Pages/Dashboard/ActiveRiders/ActiveRiders";
 import MakeAdmin from "../Pages/Dashboard/MakeAdmin/MakeAdmin";
+import Forbidden from "../Pages/Forbidden/Forbidden";
+import AdminRoute from "../Routes/AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -27,15 +29,20 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path:"/coverage",
+        path:"coverage",
         Component:Coverage
       },
       {
-        path:"/beARider",
+        path:"forbidden",
+        Component: Forbidden
+
+      },
+      {
+        path:"beARider",
         element:<PrivateRoute><BeARider></BeARider></PrivateRoute>
       },
       {
-        path: "/sendParcel",
+        path: "sendParcel",
         element:<PrivateRoute><SendParcel></SendParcel></PrivateRoute>
       }
     ]
@@ -45,11 +52,11 @@ export const router = createBrowserRouter([
     Component:AuthLayout,
     children:[
       {
-        path:"/login",
+        path:"login",
         Component: Login
       },
       {
-        path:"/register",
+        path:"register",
         Component: Register,
       },
     ]
@@ -77,15 +84,18 @@ export const router = createBrowserRouter([
       },
       {
         path:"pendingRiders",
-        Component:PendingRiders
+        // Component:PendingRiders
+        element:<AdminRoute><PendingRiders></PendingRiders></AdminRoute>
       },
       {
         path:"activeRiders",
-        Component:ActiveRiders
+        // Component:ActiveRiders
+        element:<AdminRoute><ActiveRiders></ActiveRiders></AdminRoute>
       },
       {
         path:"makeAdmin",
-        Component:MakeAdmin
+        // Component:MakeAdmin
+        element:<AdminRoute><MakeAdmin></MakeAdmin></AdminRoute>
       }
     ]
   }
