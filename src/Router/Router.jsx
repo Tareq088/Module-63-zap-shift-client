@@ -36,9 +36,7 @@ export const router = createBrowserRouter([
       {
         path:"forbidden",
         Component: Forbidden
-
       },
-      
       {
         path:"beARider",
         element:<PrivateRoute><BeARider></BeARider></PrivateRoute>

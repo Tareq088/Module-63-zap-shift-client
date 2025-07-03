@@ -6,6 +6,7 @@ import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import axios from "axios";
 import useFetchJson from "../../Hooks/useFetchJson";
+import { useNavigate } from "react-router";
    // generate tracking Id
   const generateTrackingId = () => {
   const random = Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g., "4F7Z1P"
@@ -18,6 +19,7 @@ import useFetchJson from "../../Hooks/useFetchJson";
 
 const SendParcelForm = () => {
   const {user} = useAuth();
+  const navigate = useNavigate();
   const { control, handleSubmit, watch, reset, register } = useForm();
   const axiosSecure = useAxiosSecure();
   const [cost, setCost] = useState(null);
@@ -106,6 +108,7 @@ const SendParcelForm = () => {
           reset();
           setCost(null);
           setHasCalculated(false);
+          navigate("/dashboard/myParcels")
       }
     })
     .catch(error=>{

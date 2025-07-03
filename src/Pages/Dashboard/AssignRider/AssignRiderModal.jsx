@@ -20,10 +20,11 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
   });
           // after clicking assign==>> patch will be
   const assignMutation = useMutation({
-    mutationFn: async ({ parcelId, riderId }) => {
+    mutationFn: async ({ parcelId, riderId,riderName,riderPhone, riderEmail }) => {
       const res = await axiosSecure.patch("parcels/assign", {
         parcelId,
         riderId,
+        riderName,riderPhone, riderEmail
       });
       return res.data;
     },
@@ -37,7 +38,7 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
     },
   });
 
-  const handleAssign = (riderId) => {
+  const handleAssign = (riderId,riderName,riderPhone, riderEmail) => {
     Swal.fire({
       title: "Assign this rider?",
       icon: "question",
@@ -45,7 +46,7 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
       confirmButtonText: "Yes, assign",
     }).then((result) => {
       if (result.isConfirmed) {
-        assignMutation.mutate({ parcelId: parcel._id, riderId });
+        assignMutation.mutate({ parcelId: parcel._id, riderId,riderName,riderPhone, riderEmail });
       }
     });
   };
@@ -82,7 +83,7 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
                       <td>{rider.district}</td>
                       <td>
                         <button
-                          onClick={() => handleAssign(rider._id)}
+                          onClick={() => handleAssign(rider?._id, rider?.name, rider.phone, rider.email)}
                           className="btn btn-sm btn-primary text-black"
                         >
                           Assign
