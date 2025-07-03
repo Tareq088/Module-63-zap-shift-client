@@ -87,8 +87,8 @@ const DashboardLayout = () => {
               Update Profile
             </NavLink>
           </li>
-                      {/* give admin role */}
-          { !roleLoading && role === "admin" && (
+          {/* give admin role */}
+          {!roleLoading && role === "admin" && (
             <>
               <li>
                 <NavLink to="/dashboard/activeRiders">
@@ -106,6 +106,12 @@ const DashboardLayout = () => {
                 <NavLink to="/dashboard/makeAdmin">
                   <FaUserShield className="inline mr-2" />
                   Make Admin
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/assignRider">
+                  <FaUserCheck className="inline mr-2" />
+                  Assign Rider
                 </NavLink>
               </li>
             </>

@@ -7,7 +7,7 @@ import useAuth from "../../../Hooks/useAuth";
 const Login = () => {
   const{signIn,user, setUser} =useAuth();
   const location = useLocation();
-  console.log(location)
+  // console.log(location)
   const navigate = useNavigate()
 
     const {register,handleSubmit, formState:{errors}} = useForm();
