@@ -8,7 +8,7 @@ const AdminRoute = ({children}) => {
     const {role, roleLoading} = useUserRole();
     const location = useLocation();
 
-    if(roleLoading){
+    if(roleLoading || loading){
         return (<span className="loading loading-dots loading-lg"></span>)
     }
     if(user && role === "admin"){

@@ -9,6 +9,7 @@ import {
   FaUserCheck,
   FaUserClock,
   FaUserShield,
+  FaTruck,
 } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import useUserRole from "../Hooks/useUserRole";
@@ -87,6 +88,17 @@ const DashboardLayout = () => {
               Update Profile
             </NavLink>
           </li>
+          {/* Rider Role */}
+          {!roleLoading && role === "rider" && (
+            <>
+              <li>
+                <NavLink to="/dashboard/pendingDeliveries">
+                  <FaTruck className="inline mr-2" />
+                  Pending Deliveries
+                </NavLink>
+              </li>
+            </>
+          )}
           {/* give admin role */}
           {!roleLoading && role === "admin" && (
             <>
