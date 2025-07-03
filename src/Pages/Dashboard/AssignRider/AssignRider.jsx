@@ -7,12 +7,13 @@ const AssignRider = () => {
   const axiosSecure = useAxiosSecure();
    const [selectedParcel, setSelectedParcel] = useState(null);
 
-  const { data: parcels = [], isLoading } = useQuery({
+  const { data: parcels = [], isLoading, refetch } = useQuery({
     queryKey: ["assignableParcels"],
     queryFn: async () => {
       const res = await axiosSecure.get(
         "/parcels?payment_status=paid&delivery_status=not_collected"
       );
+                // older data will come first
       return res.data.sort(
         (a, b) =>
           new Date(a.parcel.creation_date) - new Date(b.parcel.creation_date)
@@ -87,6 +88,7 @@ const AssignRider = () => {
                         <AssignRiderModal
                             parcel={selectedParcel}
                             onClose={() => setSelectedParcel(null)}
+                            refetch={refetch}
                         />
                     )}
                   </td>

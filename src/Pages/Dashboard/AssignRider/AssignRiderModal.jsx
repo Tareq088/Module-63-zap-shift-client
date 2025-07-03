@@ -1,14 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
-const AssignRiderModal = ({ parcel, onClose }) => {
-    console.log(parcel)
+const AssignRiderModal = ({ parcel, onClose,refetch }) => {
+  console.log(parcel);
   const axiosSecure = useAxiosSecure();
   const senderDistrict = parcel?.sender?.district;
   const receiverDistrict = parcel?.receiver?.district;
 
   const { data: riders = [], isLoading } = useQuery({
-    queryKey: ['matchingRiders', senderDistrict, receiverDistrict],
+    queryKey: ["matchingRiders", senderDistrict, receiverDistrict],
     queryFn: async () => {
       const res = await axiosSecure.get(
         `/riders/match?senderDistrict=${senderDistrict}&receiverDistrict=${receiverDistrict}`
@@ -17,10 +18,36 @@ const AssignRiderModal = ({ parcel, onClose }) => {
     },
     enabled: !!senderDistrict && !!receiverDistrict,
   });
+          // after clicking assign==>> patch will be
+  const assignMutation = useMutation({
+    mutationFn: async ({ parcelId, riderId }) => {
+      const res = await axiosSecure.patch("parcels/assign", {
+        parcelId,
+        riderId,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      Swal.fire("✅ Success", "Rider assigned successfully", "success");
+      onClose(); // close the modal
+      refetch(); // refetch parcels
+    },
+    onError: () => {
+      Swal.fire("❌ Failed", "Could not assign rider", "error");
+    },
+  });
 
   const handleAssign = (riderId) => {
-    console.log('Assign to:', riderId, 'for parcel:', parcel._id);
-    // future logic here
+    Swal.fire({
+      title: "Assign this rider?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, assign",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        assignMutation.mutate({ parcelId: parcel._id, riderId });
+      }
+    });
   };
 
   return (
@@ -43,7 +70,9 @@ const AssignRiderModal = ({ parcel, onClose }) => {
               <tbody>
                 {riders.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="text-center">No matching riders found</td>
+                    <td colSpan="4" className="text-center">
+                      No matching riders found
+                    </td>
                   </tr>
                 ) : (
                   riders?.map((rider) => (
@@ -54,7 +83,7 @@ const AssignRiderModal = ({ parcel, onClose }) => {
                       <td>
                         <button
                           onClick={() => handleAssign(rider._id)}
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm btn-primary text-black"
                         >
                           Assign
                         </button>
@@ -67,7 +96,9 @@ const AssignRiderModal = ({ parcel, onClose }) => {
           </div>
         )}
         <div className="modal-action">
-          <button onClick={onClose} className="btn">Close</button>
+          <button onClick={onClose} className="btn">
+            Close
+          </button>
         </div>
       </div>
     </dialog>
