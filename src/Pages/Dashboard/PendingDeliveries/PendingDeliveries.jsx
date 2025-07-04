@@ -8,16 +8,10 @@ const PendingDeliveries = () => {
   const axiosSecure = useAxiosSecure();
 
   // ✅ Fetch pending delivery parcels for this rider
-  const {
-    data: parcels = [],
-    refetch,
-    isLoading,
-  } = useQuery({
+  const {data: parcels = [],refetch,isLoading,} = useQuery({
     queryKey: ["pendingDeliveries", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/parcels/pending-deliveries?riderEmail=${user?.email}`
-      );
+      const res = await axiosSecure.get(`/parcels/pending-deliveries?riderEmail=${user?.email}`);
       return res.data;
     },
     enabled: !!user?.email,
@@ -25,11 +19,7 @@ const PendingDeliveries = () => {
 
   // ✅ Mutation to update delivery_status
   const { mutate: updateDeliveryStatus } = useMutation({
-    mutationFn: async ({ id, newStatus }) => {
-      const res = await axiosSecure.patch(
-        `/parcels/${id}/delivery-status`,
-        { newStatus }
-      );
+    mutationFn: async ({ id, newStatus }) => {const res = await axiosSecure.patch(`/parcels/${id}/delivery-status`,{ newStatus });
       return res.data;
     },
     onSuccess: (data) => {

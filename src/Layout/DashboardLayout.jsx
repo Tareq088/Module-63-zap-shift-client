@@ -10,6 +10,7 @@ import {
   FaUserClock,
   FaUserShield,
   FaTruck,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import useUserRole from "../Hooks/useUserRole";
@@ -95,6 +96,12 @@ const DashboardLayout = () => {
                 <NavLink to="/dashboard/pendingDeliveries">
                   <FaTruck className="inline mr-2" />
                   Pending Deliveries
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/completedDeliveries">
+                  <FaCheckCircle className="inline mr-2" />
+                  Completed Deliveries
                 </NavLink>
               </li>
             </>
