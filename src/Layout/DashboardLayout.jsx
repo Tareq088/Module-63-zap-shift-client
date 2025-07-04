@@ -11,6 +11,7 @@ import {
   FaUserShield,
   FaTruck,
   FaCheckCircle,
+  FaMoneyBillWave,
 } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import useUserRole from "../Hooks/useUserRole";
@@ -102,6 +103,12 @@ const DashboardLayout = () => {
                 <NavLink to="/dashboard/completedDeliveries">
                   <FaCheckCircle className="inline mr-2" />
                   Completed Deliveries
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/myEarnings">
+                  <FaMoneyBillWave className="inline mr-2" />
+                  My Earning
                 </NavLink>
               </li>
             </>
