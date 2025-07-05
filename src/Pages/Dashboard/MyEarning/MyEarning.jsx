@@ -24,11 +24,13 @@ const MyEarning = () => {
 
   const today = new Date();
 
+
   const stats = parcels.reduce((acc, parcel) => {
       const sameDistrict = parcel.sender?.district === parcel.receiver?.district;
       const rate = sameDistrict ? 0.8 : 0.3;
       const earning = parcel.cost * rate;
-      const date = parseISO(parcel.paidAtTime);
+      const date = parseISO(parcel?.deliveredAt);
+        // console.log("deliveredAt", parcel.deliveredAt)
 
       acc.totalCost += parcel.cost;
       acc.totalEarning += earning;

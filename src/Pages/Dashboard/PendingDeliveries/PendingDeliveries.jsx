@@ -2,10 +2,13 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAddTrackingEvent from "../../../Hooks/useAddTrackingEvent";
 
 const PendingDeliveries = () => {
+            // here user = rider
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const addTrackingEvent = useAddTrackingEvent();
 
   // ✅ Fetch pending delivery parcels for this rider
   const {data: parcels = [],refetch,isLoading,} = useQuery({
@@ -32,7 +35,7 @@ const PendingDeliveries = () => {
   });
 
   // 🔘 Action handler
-  const handleStatusChange = (id, currentStatus) => {
+  const handleStatusChange = (id, currentStatus,item) => {
     const nextStatus =
       currentStatus === "riders-assigned" ? "in-transit" : "delivered";
     const confirmText =
@@ -46,10 +49,29 @@ const PendingDeliveries = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: confirmText,
-    }).then((result) => {
+    }).then( async(result) => {
       if (result.isConfirmed) {
         updateDeliveryStatus({ id, newStatus: nextStatus });
       }
+                                                              // track the parcel
+      let trackDetails = `Picked up by ${user?.displayName}`;
+      if(nextStatus === "delivered"){
+        trackDetails = `Delivered up by ${user?.displayName}`;
+      }
+           try {
+                const trackingData = {
+                trackingId: item.trackingId,
+                status: nextStatus,
+                details: trackDetails,
+                updated_by: user.email,
+                };
+                await addTrackingEvent(trackingData);
+            } catch (err) {
+                console.error('Failed to post tracking event', err);
+            }
+      
+                 
+    
     });
   };
 
@@ -95,7 +117,7 @@ const PendingDeliveries = () => {
                     <button
                       className="btn btn-xs btn-success"
                       onClick={() =>
-                        handleStatusChange(item._id, item.delivery_status)
+                        handleStatusChange(item._id, item.delivery_status,item)
                       }
                     >
                       {item.delivery_status === "riders-assigned"

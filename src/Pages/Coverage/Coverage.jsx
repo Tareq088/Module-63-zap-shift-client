@@ -10,7 +10,6 @@ let DefaultIcon = L.icon({
   shadowUrl: markerShadow,
 });
 L.Marker.prototype.options.icon = DefaultIcon;
-
 // const districtData = [
 //   { district: 'Dhaka', latitude: 23.8103, longitude: 90.4125 },
 //   { district: 'Faridpur', latitude: 23.6, longitude: 89.8333 },

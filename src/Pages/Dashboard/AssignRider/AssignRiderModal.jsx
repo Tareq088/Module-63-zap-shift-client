@@ -1,12 +1,18 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import useAddTrackingEvent from "../../../Hooks/useAddTrackingEvent";
+import useAuth from "../../../Hooks/useAuth";
+import { useState } from "react";
 
 const AssignRiderModal = ({ parcel, onClose,refetch }) => {
   console.log(parcel);
   const axiosSecure = useAxiosSecure();
   const senderDistrict = parcel?.sender?.district;
   const receiverDistrict = parcel?.receiver?.district;
+  const addTrackingEvent = useAddTrackingEvent();
+  const [selectedRider, setSelectedRider] = useState(null);
+  const{user} = useAuth();
 
   const { data: riders = [], isLoading } = useQuery({
     queryKey: ["matchingRiders", senderDistrict, receiverDistrict],
@@ -18,9 +24,11 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
     },
     enabled: !!senderDistrict && !!receiverDistrict,
   });
-          // after clicking assign==>> patch will be
+  // console.log(riders)
+          // after clicking assign==>> patch will be done. so ei mutation kokhon hbe sekhane ai function bosaite hbe assignMutation.mutate
   const assignMutation = useMutation({
-    mutationFn: async ({ parcelId, riderId,riderName,riderPhone, riderEmail }) => {
+    mutationFn: async ({ parcelId, riderId,riderName,riderPhone, riderEmail,rider }) => {
+      setSelectedRider(rider);
       const res = await axiosSecure.patch("parcels/assign", {
         parcelId,
         riderId,
@@ -28,8 +36,22 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
       });
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: async() => {
+      // console.log(selectedRider);
       Swal.fire("✅ Success", "Rider assigned successfully", "success");
+                  // track the rider assigned
+       try {
+            const trackingData = {
+            // parcelId: parcel._id,
+            trackingId: parcel.trackingId,
+            status: 'Rider_Assigned',
+            details: `Assigned to ${selectedRider?.name}`,
+            updated_by: user.email,
+            };
+            await addTrackingEvent(trackingData);
+        } catch (err) {
+            console.error('Failed to post tracking event', err);
+        }
       onClose(); // close the modal
       refetch(); // refetch parcels
     },
@@ -38,16 +60,17 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
     },
   });
 
-  const handleAssign = (riderId,riderName,riderPhone, riderEmail) => {
+  const handleAssign = (riderId,riderName,riderPhone, riderEmail,rider) => {
     Swal.fire({
       title: "Assign this rider?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes, assign",
-    }).then((result) => {
+    }).then( (result) => {
       if (result.isConfirmed) {
-        assignMutation.mutate({ parcelId: parcel._id, riderId,riderName,riderPhone, riderEmail });
+        assignMutation.mutate({ parcelId: parcel._id, riderId,riderName,riderPhone, riderEmail,rider });
       }
+       
     });
   };
 
@@ -83,7 +106,7 @@ const AssignRiderModal = ({ parcel, onClose,refetch }) => {
                       <td>{rider.district}</td>
                       <td>
                         <button
-                          onClick={() => handleAssign(rider?._id, rider?.name, rider.phone, rider.email)}
+                          onClick={() => handleAssign(rider?._id, rider?.name, rider.phone, rider.email,rider)}
                           className="btn btn-sm btn-primary text-black"
                         >
                           Assign

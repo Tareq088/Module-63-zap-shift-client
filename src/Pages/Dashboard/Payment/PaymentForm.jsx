@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import useAuth from './../../../Hooks/useAuth';
 import Swal from 'sweetalert2';
+import useAddTrackingEvent from './../../../Hooks/useAddTrackingEvent';
 
 const PaymentForm = () => {
     const stripe = useStripe();
@@ -13,6 +14,7 @@ const PaymentForm = () => {
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
     const {user} = useAuth();
+    const addTrackingEvent = useAddTrackingEvent();
     // console.log(parcelId)
     const [error, setError] = useState(" ");
                 // tanstack query diye parcelInfo nitechi
@@ -58,7 +60,6 @@ const PaymentForm = () => {
             const res =await axiosSecure.post('/create-payment-intent',{
             amountInCents,parcelId
             })
-            // console.log("res from intent", res);
 
             const clientSecret = res.data.clientSecret;
                         // step:3-- confirm payment
@@ -98,11 +99,24 @@ const PaymentForm = () => {
                                         title: 'Payment Successful!',
                                         html: `<p>Your payment was successful.</p><p><strong>Transaction ID:</strong> ${transactionId}</p>`,
                                         confirmButtonText: 'Go to My Parcels',
-                                        }).then(result => {
-                                        if (result.isConfirmed) {
-                                            navigate('/dashboard/myParcels');
-                                        }
-                                                        })
+                                        }).then( async(result) => {
+                                            if (result.isConfirmed) {
+                                                                                    // track payment is done
+                                                try {
+                                                    const trackingData = {
+                                                    // parcelId: parcel._id,
+                                                    trackingId: parcelInfo.trackingId,
+                                                    status: 'Payment_done',
+                                                    details: `Paid by ${user?.displayName}`,
+                                                    updated_by: user.email,
+                                                    };
+                                                    await addTrackingEvent(trackingData);
+                                                } catch (err) {
+                                                    console.error('Failed to post tracking event', err);
+                                                }
+                                                navigate('/dashboard/myParcels');
+                                            }
+                                        })
                         }
                     }
                 }

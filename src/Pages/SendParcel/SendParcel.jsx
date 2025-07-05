@@ -7,6 +7,7 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import axios from "axios";
 import useFetchJson from "../../Hooks/useFetchJson";
 import { useNavigate } from "react-router";
+import useAddTrackingEvent from "../../Hooks/useAddTrackingEvent";
    // generate tracking Id
   const generateTrackingId = () => {
   const random = Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g., "4F7Z1P"
@@ -14,8 +15,7 @@ import { useNavigate } from "react-router";
   return `TRK-${random}${timestamp}`; // e.g., "TRK-4F7Z1P8392"
 };
 
-// Load from public folder dynamically
-// const districtData = require(`${process.env.PUBLIC_URL}/districtData.json`);
+
 
 const SendParcelForm = () => {
   const {user} = useAuth();
@@ -26,6 +26,7 @@ const SendParcelForm = () => {
   const [hasCalculated, setHasCalculated] = useState(false);
   const [breakdownCost, setBreakdownCost] = useState(" ");
   const fetchPromise = useFetchJson();
+  const addTrackingEvent = useAddTrackingEvent();
 
   const [districtData, setDistrictData] = useState([]); // ✅ Add state for data
   // ✅ Fetch district data from public folder on mount
@@ -92,6 +93,7 @@ const SendParcelForm = () => {
   //   confirmButtonText: 'Confirm',
   //   cancelButtonText: 'Cancel'
   // });
+
     const parcelData = {...data, cost, 
       creation_date: new Date().toISOString(),
       created_by: user?.email,
@@ -101,13 +103,30 @@ const SendParcelForm = () => {
     }
     // console.log(parcelData);
     axiosSecure.post('/parcels',parcelData)
-    .then(data => {
+    .then(  async(data) => {
       console.log(data.data);
       if(data.data.insertedId){
           toast.success("Parcel info submitted!");
           reset();
           setCost(null);
           setHasCalculated(false);
+                          // track parcel is created
+          try {
+                const trackingData = {
+                  // parcelId: parcel._id,
+                  trackingId: parcelData.trackingId,
+                  status: 'Parcel_created',
+                  details: `Parcel is created by ${user?.displayName}`,
+                  updated_by: user.email,
+                };
+
+                await addTrackingEvent(trackingData);
+                console.log('Tracking event successfully added');
+              } catch (err) {
+                console.error('Failed to post tracking event', err);
+              }
+            
+
           navigate("/dashboard/myParcels")
       }
     })
