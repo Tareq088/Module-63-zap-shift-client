@@ -37,10 +37,6 @@ const AuthProvider = ({children}) => {
             unSubscribe();
         }
     },[])
-
-
-
-
     const authInfo ={
         user,setUser,loading, setLoading,createUser, signIn, signInWithGoogle, logOut, updateUserProfile
     }
